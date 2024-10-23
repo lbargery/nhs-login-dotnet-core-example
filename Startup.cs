@@ -1,9 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
-using IdentityModel;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
@@ -12,11 +7,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.OpenSsl;
-using Org.BouncyCastle.Security;
-using Base64Url = Jose.Base64Url;
 
 namespace NHS.Login.Dotnet.Core.Sample
 {
@@ -47,7 +39,7 @@ namespace NHS.Login.Dotnet.Core.Sample
                 .AddCookie()
                 .AddOpenIdConnect(options =>
                 {
-                    options.ClientId = "YOUR-CLIENT-ID";
+                    options.ClientId = "CLIENTID";
                     options.Authority = "https://auth.sandpit.signin.nhs.uk/";
                     options.ResponseType = "code";
                     options.ResponseMode = "form_post";
@@ -78,14 +70,12 @@ namespace NHS.Login.Dotnet.Core.Sample
                         }
                     };
                 });
-
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
         
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -99,17 +89,17 @@ namespace NHS.Login.Dotnet.Core.Sample
             }
 
             app.UseAuthentication();
+            
+            app.UseRouting();
 
+            app.UseAuthorization();
+
+    
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
-            });
+            app.UseEndpoints(e => e.MapDefaultControllerRoute());
         }
     }
 }
