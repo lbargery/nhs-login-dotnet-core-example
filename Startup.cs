@@ -32,6 +32,8 @@ namespace NHS.Login.Dotnet.Core.Sample
             });
 
             services.AddMvc();
+            services.AddControllersWithViews().AddRazorRuntimeCompilation();
+            
             services.AddAuthentication(options =>
                 {
                     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -100,7 +102,11 @@ namespace NHS.Login.Dotnet.Core.Sample
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
-            app.UseEndpoints(e => e.MapDefaultControllerRoute());
+            app.UseEndpoints(e =>
+            {
+                e.MapDefaultControllerRoute();
+                e.MapRazorPages();
+            });
         }
     }
 }
