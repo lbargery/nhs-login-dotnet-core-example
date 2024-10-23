@@ -31,6 +31,7 @@ namespace NHS.Login.Dotnet.Core.Sample
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.AddMvc();
             services.AddAuthentication(options =>
                 {
                     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -39,7 +40,7 @@ namespace NHS.Login.Dotnet.Core.Sample
                 .AddCookie()
                 .AddOpenIdConnect(options =>
                 {
-                    options.ClientId = "CLIENTID";
+                    options.ClientId = "YOUR-CLIENT-ID";
                     options.Authority = "https://auth.sandpit.signin.nhs.uk/";
                     options.ResponseType = "code";
                     options.ResponseMode = "form_post";
